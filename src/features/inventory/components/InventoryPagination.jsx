@@ -1,7 +1,7 @@
 "use client";
 import { productsApiUrl } from "@/services/product";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useRef } from "react";
+import React, { useRef }  from "react";
 
 const InventoryPagination = ({ setFetchUrl, data }) => {
   const router = useRouter();
