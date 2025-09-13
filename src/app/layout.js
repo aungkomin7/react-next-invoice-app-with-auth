@@ -1,15 +1,6 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import "@/styles/globals.css";
+import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Create Next App",
@@ -19,10 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`antialiased`}>
         {children}
+        <Toaster />
+        <NextTopLoader />
       </body>
     </html>
   );
