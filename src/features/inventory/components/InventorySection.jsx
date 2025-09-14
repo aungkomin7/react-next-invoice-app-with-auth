@@ -1,39 +1,24 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import InventoryTable from "./InventoryTable";
-import useSWR from "swr";
-import { productsApiUrl, productsFetcher } from "@/services/product";
 import BreadCrumb from "@/components/BreadCurmb";
 import InventoryTableControlBar from "./InventoryTableControlBar";
-import { Zoomies } from "ldrs/react";
 import "ldrs/react/Zoomies.css";
 import InventoryTableLoader from "./InventoryTableLoader";
-import { useSearchParams } from "next/navigation";
 import InventoryPagination from "./InventoryPagination";
+import useProduct from "../hooks/useProduct";
 
 const InventorySection = () => {
-  const [fetchUrl, setFetchUrl] = useState(`${productsApiUrl}`);
-  const { data, isLoading } = useSWR(fetchUrl, productsFetcher);
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    setFetchUrl(`${productsApiUrl}?${searchParams.toString()}`);
-  }, []);
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex justify-center items-center flex-1 bg-white dark:bg-gray-900">
-  //       <Zoomies
-  //         size="80"
-  //         stroke="5"
-  //         bgOpacity="0.1"
-  //         speed="1.4"
-  //         color="black"
-  //       />
-  //     </div>
-
-  //   );
-  // }
+  const {
+    products,
+    productLoading,
+    searchParams,
+    searchRef,
+    handleClearSearch,
+    handleSearch,
+    handleLimit,
+    limitRef,
+    handlePaginate,
+  } = useProduct();
 
   return (
     <section className="p-3 flex-1 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300  shadow-sm">
@@ -44,14 +29,24 @@ const InventorySection = () => {
         </h2>
       </div>
 
-      <InventoryTableControlBar setFetchUrl={setFetchUrl} />
+      <InventoryTableControlBar
+        handleSearch={handleSearch}
+        handleClearSearch={handleClearSearch}
+        searchParams={searchParams}
+        searchRef={searchRef}
+      />
 
-      {isLoading ? (
+      {productLoading ? (
         <InventoryTableLoader />
       ) : (
-        <InventoryTable products={data?.data} />
+        <InventoryTable products={products?.data} />
       )}
-      <InventoryPagination setFetchUrl={setFetchUrl} data={data} />
+      <InventoryPagination
+        handleLimit={handleLimit}
+        data={products}
+        limitRef={limitRef}
+        handlePaginate={handlePaginate}
+      />
     </section>
   );
 };

@@ -1,54 +1,14 @@
 "use client";
-import { productsApiUrl } from "@/services/product";
-import debounce from "lodash.debounce";
 import { Plus, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import useProduct from "../hooks/useProduct";
 
-const InventoryTableControlBar = ({ setFetchUrl }) => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const searchRef = useRef();
-  const lastPageRef = useRef(null); // ✅ store last page before searching
-
-  useEffect(() => {
-    if (searchParams.get("q")) {
-      searchRef.current.value = searchParams.get("q");
-    }
-  }, [searchParams]);
-
-  // ✅ Search → reset to page 1, save old page
-  const handleSearch = debounce((e) => {
-    const q = e.target.value;
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (!searchParams.get("q")) {
-      // only save last page if search wasn't active yet
-      lastPageRef.current = searchParams.get("page") || "1";
-    }
-
-    params.set("q", q);
-    params.set("page", "1"); // reset page on new search
-
-    router.push(`?${params}`);
-    setFetchUrl(`${productsApiUrl}?${params}`);
-  }, 500);
-
-  // ✅ Clear search → restore last page
-  const handleClearSearch = () => {
-    searchRef.current.value = "";
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.delete("q"); // remove search
-    if (lastPageRef.current) {
-      params.set("page", lastPageRef.current); // restore previous page
-    }
-
-    router.push(`?${params}`);
-    setFetchUrl(`${productsApiUrl}?${params}`);
-  };
-
+const InventoryTableControlBar = ({
+  handleSearch,
+  handleClearSearch,
+  searchParams,
+  searchRef,
+}) => {
   return (
     <div className="w-full flex items-center justify-between mb-6">
       <div className="relative">

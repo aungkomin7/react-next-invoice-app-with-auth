@@ -1,35 +1,7 @@
 "use client";
-import { productsApiUrl } from "@/services/product";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useRef }  from "react";
+import React from "react";
 
-const InventoryPagination = ({ setFetchUrl, data }) => {
-  const router = useRouter();
-  const limitRef = useRef();
-  const searchParams = useSearchParams();
-  const handleNext = () => {
-    const url = new URL(data?.links?.next);
-    router.push(`${url.search}`);
-    setFetchUrl(`${productsApiUrl}${url.search}`);
-  };
-
-  const handlePrev = () => {
-    const url = new URL(data?.links?.prev);
-    router.push(`${url.search}`);
-    setFetchUrl(`${productsApiUrl}${url.search}`);
-  };
-
-  const handleLimit = () => {
-    const paramsObj = Object.fromEntries(searchParams.entries());
-
-    const params = new URLSearchParams({
-      ...paramsObj,
-      limit: limitRef.current.value,
-      page: 1,
-    });
-    router.push(`?${params.toString()}`);
-    setFetchUrl(`${productsApiUrl}?${params.toString()}`);
-  };
+const InventoryPagination = ({handleLimit, data, limitRef, handlePaginate}) => {
 
   return (
     <div className="flex items-center justify-between">
@@ -57,7 +29,7 @@ const InventoryPagination = ({ setFetchUrl, data }) => {
       >
         {/* Previous Button */}
         <button
-          onClick={handlePrev}
+          onClick={() => handlePaginate(data?.links?.prev)}
           disabled={!data?.links?.prev}
           type="button"
           className="min-h-9.5 min-w-9.5 py-2 px-3 inline-flex items-center gap-x-1.5 text-sm rounded-lg
@@ -83,7 +55,7 @@ const InventoryPagination = ({ setFetchUrl, data }) => {
 
         {/* Next Button */}
         <button
-          onClick={handleNext}
+          onClick={() => handlePaginate(data?.links?.next)}
           disabled={!data?.links?.next}
           type="button"
           className="min-h-9.5 min-w-9.5 py-2 px-3 inline-flex items-center gap-x-1.5 text-sm rounded-lg
